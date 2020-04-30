@@ -1,0 +1,16 @@
+.title{
+    font-family: Roboto;
+    margin: 0;
+    padding: 0;
+    /* margin-bottom: 15px; */
+    display: inline-block;
+    color: rgb(69, 72, 241);
+  
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    align-items: center;
+}

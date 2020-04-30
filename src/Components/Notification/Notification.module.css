@@ -1,0 +1,13 @@
+.notification{
+ font-size: 12px;
+ color: lavender;
+ background-color: rgb(241, 37, 37);
+ border-radius: 3px;
+ padding: 5px 15px;
+}
+
+.notification:hover,
+.notification:focus{
+    cursor: pointer;
+    background-color: rgb(243, 147, 147);
+}

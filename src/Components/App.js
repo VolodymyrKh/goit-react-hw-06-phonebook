@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import uuid from 'react-uuid';
+import { connect } from 'react-redux';
+// import uuid from 'react-uuid';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
@@ -18,30 +19,14 @@ const filterContacts = (filter, contacts) => {
   );
 };
 
-export default class App extends Component {
+class App extends Component {
   static propTypes = {
-    contacts: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        number: PropTypes.string.isRequired,
-      }),
-    ),
     filter: PropTypes.string,
     titleAnimation: PropTypes.bool,
-    existContact: PropTypes.bool,
   };
 
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
     titleAnimation: false,
-    existContact: false,
   };
 
   changeFilter = e => {
@@ -49,33 +34,33 @@ export default class App extends Component {
     this.setState({ filter: e.target.value });
   };
 
-  addContact = contact => {
-    const stateNames = this.state.contacts.map(({ name }) => name);
+  // addContact = contact => {
+  //   const stateNames = this.state.contacts.map(({ name }) => name);
 
-    if (stateNames.includes(contact.name)) {
-      this.setState({ existContact: true });
-      return;
-    }
+  //   if (stateNames.includes(contact.name)) {
+  //     this.setState({ existContact: true });
+  //     return;
+  //   }
 
-    const contactToAdd = {
-      ...contact,
-      id: uuid(),
-    };
+  //   const contactToAdd = {
+  //     id: uuid(),
+  //     ...contact,
+  //   };
 
-    this.setState(state => ({
-      contacts: [contactToAdd, ...state.contacts],
-    }));
-  };
+  //   this.setState(state => ({
+  //     contacts: [contactToAdd, ...state.contacts],
+  //   }));
+  // };
 
-  removeContact = id => {
-    this.setState(state => ({
-      contacts: state.contacts.filter(contact => contact.id !== id),
-    }));
-  };
+  // removeContact = id => {
+  //   this.setState(state => ({
+  //     contacts: state.contacts.filter(contact => contact.id !== id),
+  //   }));
+  // };
 
-  hideNotification = () => {
-    this.setState({ existContact: false });
-  };
+  // hideNotification = () => {
+  //   this.setState({ existContact: false });
+  // };
 
   // componentDidUpdate(prevProps, prevState) {
   //   if (prevState.contacts !== this.state.contacts) {
@@ -92,8 +77,9 @@ export default class App extends Component {
   }
 
   render() {
-    const { contacts, filter, titleAnimation, existContact } = this.state;
-    const filteredContacts = filterContacts(filter, contacts);
+    const { filter, titleAnimation } = this.state;
+    // const filteredContacts = filterContacts(filter, contacts);
+    const { contacts, existContact } = this.props;
 
     return (
       <>
@@ -116,8 +102,8 @@ export default class App extends Component {
           </CSSTransition>
         </div>
         <ContactForm
-          onAddContact={this.addContact}
-          existContact={existContact}
+        // onAddContact={this.addContact}
+        // existContact={existContact}
         />
 
         <CSSTransition
@@ -131,11 +117,18 @@ export default class App extends Component {
 
         {contacts.length > 0 && (
           <ContactList
-            items={filteredContacts}
-            onRemoveContact={this.removeContact}
+          // items={filteredContacts}
+          // onRemoveContact={this.removeContact}
           />
         )}
       </>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  contacts: state.contacts,
+  existContact: state.existContact,
+});
+
+export default connect(mapStateToProps)(App);

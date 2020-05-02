@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { addContact } from '../../redux/contactActions';
+import { existContact } from '../../redux/contactActions';
+import uuid from 'react-uuid';
 import PropTypes from 'prop-types';
 import styles from './ContactForm.module.css';
 
-export default class ContactForm extends Component {
+class ContactForm extends Component {
   static propTypes = {
     onAddContact: PropTypes.func.isRequired,
   };
@@ -13,6 +17,7 @@ export default class ContactForm extends Component {
   };
 
   handleChange = e => {
+    if (this.props.existContact) return;
     this.setState({
       [e.target.name]: e.target.value,
     });
@@ -20,13 +25,28 @@ export default class ContactForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    if (this.props.existContact) return;
-    this.props.onAddContact({ ...this.state });
+
+    const stateNames = this.props.contacts.map(({ name }) => name);
+
+    if (stateNames.includes(this.state.name)) {
+      if (!this.props.existContact) {
+        this.props.onShowNotification();
+      }
+      return;
+    }
+
+    const contactToAdd = {
+      id: uuid(),
+      ...this.state,
+    };
+    // console.log(this.props.onAddContact(contactToAdd))
+    this.props.onAddContact(contactToAdd);
     this.setState({ name: '', number: '' });
   };
 
   render() {
     const { name, number } = this.state;
+
     return (
       <form className={styles.contactForm} onSubmit={this.handleSubmit}>
         <label className={styles.inputLabel}>
@@ -60,3 +80,15 @@ export default class ContactForm extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  contacts: state.contacts,
+  existContact: state.existContact,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onAddContact: contactToAdd => dispatch(addContact(contactToAdd)),
+  onShowNotification: () => dispatch(existContact()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);

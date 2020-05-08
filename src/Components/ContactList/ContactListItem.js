@@ -11,7 +11,7 @@ const ContactListItem = ({ name, number, id, onRemoveContact }) => (
       <button
         className={styles.deleteButton}
         type="button"
-        onClick={() => onRemoveContact(id)}
+        onClick={()=> onRemoveContact(id)}
       >
         Delete
       </button>
@@ -23,7 +23,9 @@ ContactListItem.propTypes = {
   onRemoveContact: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  contacts: state.contacts,
+});
 
 const mapDispatchToProps = dispatch => ({
   onRemoveContact: contactId => dispatch(removeContact(contactId)),
